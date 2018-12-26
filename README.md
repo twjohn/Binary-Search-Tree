@@ -1,4 +1,4 @@
-# Binary-Tree
+# Binary-Search-Tree
 Implementation of a Binary Search Tree in Java
 
 This implementation of a Binary Search Tree will implement the following functionalities:
