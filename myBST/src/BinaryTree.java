@@ -12,7 +12,7 @@ public class BinaryTree{
     /** determines whether tree is empty or not
      *returns true if empty, otherwise false
      */
-   public boolean isEmpty(){
+   private boolean isEmpty(){
        if(root == null) return true;
        else return false;
    }
@@ -63,9 +63,87 @@ public class BinaryTree{
      * three deletion cases:    Node has no children
      *                          Node has one child
      *                          Node has Two or more children
+     *
+     * you wll need to keep track of parent nodes for these cases!
+     * to implement the last case, you will need to be able to keep track of successor
+     * nodes, which will be done via the getSuccessor function
      */
-   public void delete(int key){
+   public boolean delete(int key){
+       if(isEmpty())/** check for empty tree **/
+           return false;
+       Node current = root;
+       Node parent = current;
 
+       /** go through tree, find key needed for deletion **/
+       while(current.myData != key){
+           parent = current;
+           if(current.myData > key)  /** key less than node data? go left **/
+               current = current.left;
+           else                      /** key greater than/equal to node data? go right **/
+               current = current.right;
+           if(current == null)       /** node not found, so return false **/
+               return false;
+       }
+
+       /** first delete condition: no children of the node that is to be deleted **/
+       if(current.left == null && current.right == null){
+           if(current == root)
+               root = null; /** the tree is now empty-- root deleted **/
+           if(parent.left != null)
+               parent.left = null;
+           else if(parent.right !=null)
+               parent.right = null;
+       }
+
+       /** second delete condition: node has one child(left or right)**/
+       else if(current.left == null){/** left is null? replace with right **/
+           if(current == root)
+               root=current.right;
+           else if(parent.left != null)
+               parent.left = current.right;
+           else if(parent.right != null)
+               parent.right = current.right;
+       }
+       else if(current.right == null){/** right is null? replace with left **/
+           if(current == root)
+               root=current.left;
+           else if(parent.left != null)
+               parent.left = current.left;
+           else if(parent.right != null)
+               parent.right = current.left;
+       }
+       /** second delete condition: node has two children **/
+       else {
+           Node successor = getSuccessor(current);/** get successor node **/
+           if(current == root)
+               root = successor;
+           else if(parent.left != null)
+               parent.left = successor;
+           else if(parent.right != null)
+               parent.right = successor;
+
+           successor.left = current.left;
+       }
+           return true;
+   }
+
+   /** gets the next-right value and returns the leftmost value of that node **/
+   private Node getSuccessor(Node myNode) {
+
+       Node parent = myNode;
+       Node successor = myNode;
+       Node current = myNode.right;
+
+       while(current != null){
+           parent = successor;
+           successor = current;
+           current = current.left;
+       }
+       if(successor != myNode.right){
+           parent.left = successor.right;
+           successor.right=myNode.right;
+       }
+       return successor;
    }
 
     /** searches through BST
@@ -140,7 +218,7 @@ public class BinaryTree{
     /** counts number of leaf nodes
      * this will return the number of leaf nodes found in a tree
      */
-    public int numberOfLeafNodes(Node findLeafCount){
+    private int numberOfLeafNodes(Node findLeafCount){
         if(isEmpty())/** check if tree is empty **/
             return 0;
         if(root.left == null && root.right == null)/** root is not considered leaf, so check for this condition **/
@@ -159,7 +237,7 @@ public class BinaryTree{
     /** find the height of a given tree
      * this will recursively find the height of a given tree and return it
      */
-    public int treeHeight(Node findHeight){
+    private int treeHeight(Node findHeight){
 
         if(findHeight == null)/** node == null? then return 0 as the value **/
             return 0;
@@ -179,7 +257,7 @@ public class BinaryTree{
     /** counts the occurences of a Node with a specific value in a BST
      * returns the number of occurences in a BST for a specific value
      */
-    public int occurences(Node ocur, int key){
+    private int occurences(Node ocur, int key){
         if(isEmpty())
             return 0;
         if(ocur == null)
@@ -196,5 +274,4 @@ public class BinaryTree{
     public int getOcurrences(int key){
         return occurences(root, key);
     }
-
 }

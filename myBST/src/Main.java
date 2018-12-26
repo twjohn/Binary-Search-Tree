@@ -34,8 +34,10 @@ public class Main {
                     Scanner delete = new Scanner(System.in);
                     System.out.print("      Enter a value to delete: ");
                     myVal = delete.nextInt();
-                    bst.delete(myVal);
-                    System.out.println("      "+myVal+" deleted!");
+                    if(bst.delete(myVal))
+                        System.out.println("      "+myVal+" was deleted!");
+                    else
+                        System.out.println("      "+myVal+" was not found!");
                     break;
                 case '3':
                     Scanner search = new Scanner(System.in);
